@@ -14,8 +14,8 @@ isolate_end="$(pwd)/end-isolate.sh"
 function main()
 {
   [[ -e $pin_information ]] && rm -rf $pin_information
-  [[ -e $isolate_start ]] && rm -rf $isolate_start
-  [[ -e $isolate_end ]] && rm -rf $isolate_end
+  [[ -e $isolate_start ]]   && rm -rf $isolate_start
+  [[ -e $isolate_end ]]     && rm -rf $isolate_end
 
   get_pins
   create_files
@@ -50,11 +50,13 @@ function create_files()
 		</cputune>
 	DOC
 	cat <<- DOC >> $isolate_start
+		#!/bin/bash
 		systemctl set-property --runtime -- user.slice AllowedCPUs=$reserved_cpus
 		systemctl set-property --runtime -- system.slice AllowedCPUs=$reserved_cpus
 		systemctl set-property --runtime -- init.scope AllowedCPUs=$reserved_cpus
 	DOC
 	cat <<- DOC >> $isolate_end
+		#!/bin/bash
 		systemctl set-property --runtime -- user.slice AllowedCPUs=$all_cpus
 		systemctl set-property --runtime -- system.slice AllowedCPUs=$all_cpus
 		systemctl set-property --runtime -- init.scope AllowedCPUs=$all_cpus
